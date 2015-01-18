@@ -34,4 +34,11 @@ def load(filename, colname=None):
 
 		idx += size
 
+	# We need to set Kdp ourselves for some stupid reason.
+	res['Kdp'] = np.log(np.abs(res['RR3']) / 40.6) / 0.866
+
 	return res
+
+def clean(array):
+
+	return array[(array > -99000.0) & (array != np.nan)]
