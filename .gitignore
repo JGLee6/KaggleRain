@@ -1,3 +1,5 @@
 raw_data
 *.pyc
 *.csv
+src/*.swp
+src/*sublime*
