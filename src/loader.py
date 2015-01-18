@@ -42,3 +42,13 @@ def load(filename, colname=None):
 def clean(array):
 
 	return array[(array > -99000.0) & (array != np.nan)]
+
+
+def common_indices(array1, array2):
+
+	indices = array1 > -99000.0
+	indices &= array1 != np.nan
+	indices &= array2 > -99000.0 
+	indices &= array2 != np.nan
+
+	return indices
