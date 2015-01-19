@@ -38,7 +38,7 @@ def load(filename, colname=None):
 		idx += size
 
 	# We need to set Kdp ourselves for some stupid reason.
-	res['Kdp'] = np.log(np.abs(res['RR3']) / 40.6) / 0.866
+	res['Kdp'] = np.abs(40.6 / res['RR3']) ** 0.866
 
 	# Now reset the values that had errors (and nans to be sure).
 	args = (res['RR3'] == np.nan)
@@ -54,11 +54,11 @@ def clean(array):
 
 def common_indices(array1, array2):
 
-	indices = array1 > error_lo
-	indices = array1 < error_hi
-	indices &= array1 != np.nan
-	indices &= array2 > error_lo 
-	indices &= array2 > error_hi 
+	indices  = array1 != np.nan
+	indices &= array1 > error_lo
+	indices &= array1 < error_hi
 	indices &= array2 != np.nan
+	indices &= array2 > error_lo 
+	indices &= array2 < error_hi 
 
 	return indices
