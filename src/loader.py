@@ -62,3 +62,15 @@ def common_indices(array1, array2):
 	indices &= array2 < error_hi 
 
 	return indices
+
+def accumulator(func, accum, lst):
+    if len(lst) == 0:
+        return accum
+    else:
+        return accumulator(func, func(accum, lst[0]), lst[1:])
+
+def indices_clean(array):
+    return np.where(np.logical_and(array > error_lo, np.logical_and(array < error_hi, array != np.nan)))[0]
+
+def common_all(arr2d):
+    return accumulator(lambda x, y: np.intersect1d(x, indices_clean(y)), np.array(range(len(arr2d[0]))), arr2d)
