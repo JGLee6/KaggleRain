@@ -1,8 +1,12 @@
 import csv
 import numpy as np
+import numpy.random as rand
+import condition_data
 
 error_lo = -98999.0
 error_hi = 998.0
+TINY = 1e-9
+
 
 def load(filename, colname=None):
 
@@ -38,7 +42,8 @@ def load(filename, colname=None):
 		idx += size
 
 	# We need to set Kdp ourselves for some stupid reason.
-	res['Kdp'] = np.abs(40.6 / res['RR3']) ** 0.866
+        # add TINY to denominator to avoid dividing by 0
+	res['Kdp'] = np.abs(40.6 / (TINY + res['RR3'])) ** 0.866
 
 	# Now reset the values that had errors (and nans to be sure).
 	args = (res['RR3'] == np.nan)
@@ -47,10 +52,8 @@ def load(filename, colname=None):
 
 	return res
 
-def clean(array):
-
-	return array[(array > error_lo) & (array < error_hi) & (array != np.nan)]
-
+def clean(arr):
+    return condition_data.clean(arr)
 
 def common_indices(array1, array2):
 
@@ -63,14 +66,3 @@ def common_indices(array1, array2):
 
 	return indices
 
-def accumulator(func, accum, lst):
-    if len(lst) == 0:
-        return accum
-    else:
-        return accumulator(func, func(accum, lst[0]), lst[1:])
-
-def indices_clean(array):
-    return np.where(np.logical_and(array > error_lo, np.logical_and(array < error_hi, array != np.nan)))[0]
-
-def common_all(arr2d):
-    return accumulator(lambda x, y: np.intersect1d(x, indices_clean(y)), np.array(range(len(arr2d[0]))), arr2d)
