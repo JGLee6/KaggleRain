@@ -10,7 +10,10 @@ import warnings
 warnings.filterwarnings('error')
 
 def data_integrator(dictData, dataKey):
-    """ Returns new variable integratedData as Riemann sum style"""
+    """ Returns new variable integratedData as Riemann sum style.
+    
+    This still needs to think about cases of only one point, and point to end.
+    Basically, backward or forward time step and counterparts contribution."""
     lastId = 0.0
     dataLength = len(dictData['TimeToEnd'])
     #initialize timeDifferences and integratedData
@@ -31,10 +34,19 @@ def data_integrator(dictData, dataKey):
             else:
                 timeDiff[k] = 60.0 - dictData['TimeToEnd'][k]
                 newSum = timeDiff[k]*dictData[dataKey][k]/60.0
+                integratedData[k] = newSum
         else:
             timeDiff[k] = 60.0 - dictData['TimeToEnd'][k]
             newSum = timeDiff[k]*dictData[dataKey][k]/60.0
+            integratedData[k] = newSum
+            # add portion up to end of hour from last dataKey contribution
+            lastDeltaT = dictData['TimeToEnd'][k-1] - 0.0
+            integratedData[k-1] += lastDeltaT*dictData[dataKey][k-1]/60.0
         lastId = dictData['Id'][k]
+        
+    #update last dataKey contribution from last point
+    lastDeltaT = dictData['TimeToEnd'][-1] - 0.0
+    integratedData[-1] += lastDeltaT*dictData[dataKey][k-1]/60.0
         
     return timeDiff, integratedData
 
