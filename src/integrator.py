@@ -58,14 +58,3 @@ def integrate_all(dictData):
     
             
 
-#def integrator2(dictData, key = None):
-#    """same as data_integrator (i think)"""
-#    boundaries = np.where(np.diff(dictData['TimeToEnd']) > 0)[0] + 1
-#    deltaT =  np.diff(-dictData['TimeToEnd'])
-#    deltaT[deltaT < 0] = 0
-#    splitSum = lambda arr: np.array(map(np.sum, np.split(arr, boundaries, axis = 0)))
-#    if key is None:
-#        integratedData = {k: splitSum(deltaT * dataDict[k]) for k in dictData.keys()}
-#    else:
-#        integratedData = splitSum(dictData[key])
-#    return timeDiff, integratedData
